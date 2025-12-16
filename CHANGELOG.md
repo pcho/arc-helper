@@ -1,6 +1,6 @@
 # Changelog
 
-## [1.0.0] - {PR_MERGE_DATE}
+## [1.0.0] - 2025-12-04
 
 ### Added
 
@@ -8,5 +8,5 @@
 - **Search ARCs** - View ARC enemy types and descriptions
 - **Search Quests** - Browse quests with objectives and rewards
 - **Event Timers** - View active/upcoming events by map
-- **Traders** - Browse trader inventories with prices
+- **Browse Traders** - Browse trader inventories with prices
 - **Open Map** - Quick access to MetaForge interactive maps
