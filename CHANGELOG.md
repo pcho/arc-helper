@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.1.1] - 2025-12-24
+
+### Fixed
+
+- Fixed Event Timers displaying incorrect times by properly interpreting API times as UTC
+
 ## [1.1.0] - 2025-12-16
 
 ### Changed
