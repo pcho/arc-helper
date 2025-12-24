@@ -1,6 +1,6 @@
 # Changelog
 
-## [1.1.1] - 2025-12-24
+## [1.1.1] - {PR_MERGE_DATE}
 
 ### Fixed
 
