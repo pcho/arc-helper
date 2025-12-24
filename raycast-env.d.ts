@@ -25,6 +25,8 @@ declare namespace Preferences {
   export type Traders = ExtensionPreferences & {}
   /** Preferences accessible in the `open-map` command */
   export type OpenMap = ExtensionPreferences & {}
+  /** Preferences accessible in the `blueprints` command */
+  export type Blueprints = ExtensionPreferences & {}
 }
 
 declare namespace Arguments {
@@ -40,5 +42,7 @@ declare namespace Arguments {
   export type Traders = {}
   /** Arguments passed to the `open-map` command */
   export type OpenMap = {}
+  /** Arguments passed to the `blueprints` command */
+  export type Blueprints = {}
 }
 

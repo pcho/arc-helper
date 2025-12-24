@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.3.0] - {PR_MERGE_DATE}
+
+### Added
+
+- **My Blueprints** - New command to track your blueprint collection
+  - View all blueprints with icons and rarity
+  - Mark blueprints as obtained/needed
+  - Track duplicate blueprints
+  - Filter by: All, Needed, or Obtained
+  - Progress counter in title (e.g., "Blueprints (12/76)")
+- Blueprint tracking in Search Items - quickly mark blueprints as obtained (Cmd+O)
+
 ## [1.2.0] - {PR_MERGE_DATE}
 
 ### Changed

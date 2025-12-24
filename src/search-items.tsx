@@ -1,7 +1,8 @@
-import { ActionPanel, Action, List, Detail, Icon, Color, Cache } from "@raycast/api";
+import { ActionPanel, Action, List, Detail, Icon, Color, Cache, showToast, Toast } from "@raycast/api";
 import { useFetch } from "@raycast/utils";
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { API, Item, PaginatedResponse, getRarityColor } from "./api";
+import { getBlueprintStore, toggleBlueprintObtained, BlueprintStore } from "./storage";
 
 // Clear stale cache on first load (v2 - server-side search)
 const cache = new Cache();
@@ -109,6 +110,23 @@ function formatStatName(key: string): string {
 export default function SearchItems() {
   const [searchText, setSearchText] = useState("");
   const [itemType, setItemType] = useState<string>("all");
+  const [blueprintStore, setBlueprintStore] = useState<BlueprintStore>({});
+  const [refreshKey, setRefreshKey] = useState(0);
+
+  // Load blueprint store
+  useEffect(() => {
+    getBlueprintStore().then(setBlueprintStore);
+  }, [refreshKey]);
+
+  const handleToggleBlueprintObtained = useCallback(async (id: string, name: string) => {
+    const newStatus = await toggleBlueprintObtained(id);
+    setRefreshKey((k) => k + 1);
+    await showToast({
+      style: Toast.Style.Success,
+      title: newStatus ? "Marked as Obtained" : "Marked as Needed",
+      message: name,
+    });
+  }, []);
 
   const { isLoading, data, pagination } = useFetch(
     (options) => {
@@ -149,30 +167,52 @@ export default function SearchItems() {
         </List.Dropdown>
       }
     >
-      {data.map((item) => (
-        <List.Item
-          key={item.id}
-          icon={{ source: item.icon, fallback: Icon.Box }}
-          title={item.name}
-          subtitle={item.item_type}
-          accessories={[
-            {
-              tag: {
-                value: item.rarity,
-                color: getRarityColor(item.rarity) as Color,
+      {data.map((item) => {
+        const isBlueprint = item.item_type === "Blueprint";
+        const blueprintStatus = isBlueprint ? blueprintStore[item.id] : null;
+        const isObtained = blueprintStatus?.obtained || false;
+
+        return (
+          <List.Item
+            key={item.id}
+            icon={{ source: item.icon, fallback: Icon.Box }}
+            title={item.name}
+            subtitle={item.item_type}
+            accessories={[
+              ...(isBlueprint
+                ? [
+                    {
+                      icon: isObtained ? Icon.CheckCircle : Icon.Circle,
+                      tooltip: isObtained ? "Obtained" : "Needed",
+                    },
+                  ]
+                : []),
+              {
+                tag: {
+                  value: item.rarity,
+                  color: getRarityColor(item.rarity) as Color,
+                },
               },
-            },
-            { text: `${item.value}` },
-          ]}
-          actions={
-            <ActionPanel>
-              <Action.Push title="View Details" icon={Icon.Eye} target={<ItemDetail item={item} />} />
-              <Action.OpenInBrowser url={`https://metaforge.app/arc-raiders/items/${item.id}`} />
-              <Action.CopyToClipboard title="Copy Item Name" content={item.name} />
-            </ActionPanel>
-          }
-        />
-      ))}
+              { text: `${item.value}` },
+            ]}
+            actions={
+              <ActionPanel>
+                <Action.Push title="View Details" icon={Icon.Eye} target={<ItemDetail item={item} />} />
+                {isBlueprint && (
+                  <Action
+                    title={isObtained ? "Mark as Needed" : "Mark as Obtained"}
+                    icon={isObtained ? Icon.Circle : Icon.CheckCircle}
+                    shortcut={{ modifiers: ["cmd"], key: "o" }}
+                    onAction={() => handleToggleBlueprintObtained(item.id, item.name)}
+                  />
+                )}
+                <Action.OpenInBrowser url={`https://metaforge.app/arc-raiders/items/${item.id}`} />
+                <Action.CopyToClipboard title="Copy Item Name" content={item.name} />
+              </ActionPanel>
+            }
+          />
+        );
+      })}
     </List>
   );
 }
