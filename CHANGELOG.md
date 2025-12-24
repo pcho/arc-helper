@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.2.0] - {PR_MERGE_DATE}
+
+### Changed
+
+- Search Items now uses server-side search for instant results across all 500+ items
+- No longer need to scroll through pages before searching - search works immediately
+- Added item type filter dropdown with all 15 item categories
+
 ## [1.1.1] - {PR_MERGE_DATE}
 
 ### Fixed

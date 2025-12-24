@@ -1,7 +1,33 @@
-import { ActionPanel, Action, List, Detail, Icon, Color } from "@raycast/api";
+import { ActionPanel, Action, List, Detail, Icon, Color, Cache } from "@raycast/api";
 import { useFetch } from "@raycast/utils";
-import { useState, useMemo } from "react";
+import { useState } from "react";
 import { API, Item, PaginatedResponse, getRarityColor } from "./api";
+
+// Clear stale cache on first load (v2 - server-side search)
+const cache = new Cache();
+const CACHE_VERSION = "v2";
+if (cache.get("version") !== CACHE_VERSION) {
+  cache.clear();
+  cache.set("version", CACHE_VERSION);
+}
+
+const ITEM_TYPES = [
+  "Advanced Material",
+  "Blueprint",
+  "Consumable",
+  "Gadget",
+  "Key",
+  "Misc",
+  "Modification",
+  "Nature",
+  "Quick Use",
+  "Recyclable",
+  "Refined Material",
+  "Throwable",
+  "Topside Material",
+  "Trinket",
+  "Weapon",
+];
 
 function ItemDetail({ item }: { item: Item }) {
   const stats = item.stat_block || {};
@@ -84,33 +110,25 @@ export default function SearchItems() {
   const [searchText, setSearchText] = useState("");
   const [itemType, setItemType] = useState<string>("all");
 
-  const { isLoading, data, pagination } = useFetch((options) => `${API.items}?page=${options.page + 1}`, {
-    mapResult(result: PaginatedResponse<Item>) {
-      return {
-        data: result.data,
-        hasMore: result.pagination.hasNextPage,
-      };
+  const { isLoading, data, pagination } = useFetch(
+    (options) => {
+      const params = new URLSearchParams();
+      params.set("page", String(options.page + 1));
+      if (searchText) params.set("search", searchText);
+      if (itemType !== "all") params.set("item_type", itemType);
+      return `${API.items}?${params.toString()}`;
     },
-    keepPreviousData: true,
-    initialData: [],
-  });
-
-  const items = data || [];
-
-  const filteredItems = useMemo(() => {
-    return items.filter((item) => {
-      const matchesSearch =
-        searchText === "" ||
-        item.name.toLowerCase().includes(searchText.toLowerCase()) ||
-        item.description?.toLowerCase().includes(searchText.toLowerCase());
-      const matchesType = itemType === "all" || item.item_type === itemType;
-      return matchesSearch && matchesType;
-    });
-  }, [items, searchText, itemType]);
-
-  const itemTypes = useMemo(() => {
-    return [...new Set(items.map((item) => item.item_type))].sort();
-  }, [items]);
+    {
+      mapResult(result: PaginatedResponse<Item>) {
+        return {
+          data: result.data,
+          hasMore: result.pagination?.hasNextPage ?? false,
+        };
+      },
+      keepPreviousData: true,
+      initialData: [],
+    },
+  );
 
   return (
     <List
@@ -118,19 +136,20 @@ export default function SearchItems() {
       searchBarPlaceholder="Search items..."
       filtering={false}
       onSearchTextChange={setSearchText}
+      throttle
       pagination={pagination}
       searchBarAccessory={
         <List.Dropdown tooltip="Filter by Type" value={itemType} onChange={setItemType}>
           <List.Dropdown.Item title="All Types" value="all" />
           <List.Dropdown.Section title="Item Types">
-            {itemTypes.map((type) => (
+            {ITEM_TYPES.map((type) => (
               <List.Dropdown.Item key={type} title={type} value={type} />
             ))}
           </List.Dropdown.Section>
         </List.Dropdown>
       }
     >
-      {filteredItems.map((item) => (
+      {data.map((item) => (
         <List.Item
           key={item.id}
           icon={{ source: item.icon, fallback: Icon.Box }}
