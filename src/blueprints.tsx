@@ -1,8 +1,16 @@
-import { ActionPanel, Action, List, Detail, Icon, Color, showToast, Toast } from "@raycast/api";
+import { ActionPanel, Action, List, Detail, Icon, Color, Cache, showToast, Toast } from "@raycast/api";
 import { useFetch } from "@raycast/utils";
 import { useState, useEffect, useCallback } from "react";
 import { API, Item, PaginatedResponse, getRarityColor } from "./api";
 import { getBlueprintStore, toggleBlueprintObtained, adjustBlueprintDuplicates, BlueprintStore } from "./storage";
+
+// Clear stale cache on first load (v1 - server-side search)
+const cache = new Cache({ namespace: "blueprints" });
+const CACHE_VERSION = "v1";
+if (cache.get("version") !== CACHE_VERSION) {
+  cache.clear();
+  cache.set("version", CACHE_VERSION);
+}
 
 type FilterMode = "all" | "needed" | "obtained";
 

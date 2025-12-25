@@ -12,6 +12,10 @@
   - Progress counter in title (e.g., "Blueprints (12/76)")
 - Blueprint tracking in Search Items - quickly mark blueprints as obtained (Cmd+O)
 
+### Fixed
+
+- Fixed My Blueprints search failing when searching for items not yet loaded (same fix as Search Items in 1.2.0)
+
 ## [1.2.0] - {PR_MERGE_DATE}
 
 ### Changed
