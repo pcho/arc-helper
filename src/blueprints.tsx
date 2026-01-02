@@ -106,7 +106,7 @@ export default function Blueprints() {
       },
       keepPreviousData: true,
       initialData: [],
-      onError(error) {
+      onError() {
         showToast({
           style: Toast.Style.Failure,
           title: "Failed to load blueprints",

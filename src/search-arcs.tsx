@@ -41,7 +41,7 @@ export default function SearchArcs() {
 
   const { isLoading, data } = useFetch<PaginatedResponse<Arc>>(API.arcs, {
     keepPreviousData: true,
-    onError(error) {
+    onError() {
       showToast({
         style: Toast.Style.Failure,
         title: "Failed to load ARCs",

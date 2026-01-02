@@ -61,7 +61,7 @@ export default function Traders() {
 
   const { isLoading, data } = useFetch<TradersResponse>(API.traders, {
     keepPreviousData: true,
-    onError(error) {
+    onError() {
       showToast({
         style: Toast.Style.Failure,
         title: "Failed to load traders",

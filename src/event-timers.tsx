@@ -180,7 +180,7 @@ export default function EventTimers() {
 
   const { isLoading, data, revalidate } = useFetch<EventTimersResponse>(API.eventTimers, {
     keepPreviousData: true,
-    onError(error) {
+    onError() {
       showToast({
         style: Toast.Style.Failure,
         title: "Failed to load events",

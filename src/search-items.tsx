@@ -145,7 +145,7 @@ export default function SearchItems() {
       },
       keepPreviousData: true,
       initialData: [],
-      onError(error) {
+      onError() {
         showToast({
           style: Toast.Style.Failure,
           title: "Failed to load items",
