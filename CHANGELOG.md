@@ -1,6 +1,6 @@
 # Changelog
 
-## [1.3.0] - {PR_MERGE_DATE}
+## [1.3.0] - 2025-12-25
 
 ### Added
 
@@ -16,7 +16,7 @@
 
 - Fixed My Blueprints search failing when searching for items not yet loaded (same fix as Search Items in 1.2.0)
 
-## [1.2.0] - {PR_MERGE_DATE}
+## [1.2.0] - 2025-12-25
 
 ### Changed
 
@@ -24,7 +24,7 @@
 - No longer need to scroll through pages before searching - search works immediately
 - Added item type filter dropdown with all 15 item categories
 
-## [1.1.1] - {PR_MERGE_DATE}
+## [1.1.1] - 2025-12-25
 
 ### Fixed
 
