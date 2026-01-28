@@ -9,7 +9,7 @@
   - Simplified event processing - server now pre-computes timestamps
   - Quest locations now properly display map names
 
-## [1.4.0] - {PR_MERGE_DATE}
+## [1.4.0] - 2026-01-04
 
 ### Added
 
